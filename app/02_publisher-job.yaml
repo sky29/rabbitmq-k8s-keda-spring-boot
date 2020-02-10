@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rabbitmq-publisher
+  namespace: app-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: rabbitmq-client
+        image: jeffhollan/rabbitmq-client:dev
+        imagePullPolicy: Always
+        command: ["send"]
+        args: ["$(rabbitmq-connection-url)", "200"]
+        envFrom:
+        - secretRef:
+            name: rabbitmq-connection-url-secret
+      restartPolicy: Never
+  backoffLimit: 4
+

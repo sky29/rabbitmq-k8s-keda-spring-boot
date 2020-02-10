@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-consumer
+  namespace: app-system
+  labels:
+    app: rabbitmq-consumer
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq-consumer
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-consumer
+    spec:
+      containers:
+      - name: rabbitmq-consumer
+        image: jeffhollan/rabbitmq-client:dev
+        imagePullPolicy: Always
+        command: ["receive"]
+        args: ["$(rabbitmq-connection-url)"]
+        envFrom:
+        - secretRef:
+            name: rabbitmq-connection-url-secret
